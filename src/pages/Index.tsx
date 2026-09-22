@@ -21,7 +21,7 @@ import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { TOOL_LINKS, openScriptTool } from '@/lib/prospectTools';
+import { TOOL_LINKS } from '@/lib/prospectTools';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { DeleteAllLeads } from '@/components/DeleteAllLeads';
 import { TodayCounter } from '@/components/TodayCounter';
@@ -109,7 +109,6 @@ const Index = () => {
   const openNew = () => { setSelectedLead(null); setDialogOpen(true); };
   const openEdit = (lead: Lead) => {
     orderRef.current = filteredLeads.map((l) => l.id);
-    openScriptTool(lead.nome);
     setOpenLeadId(lead.id);
   };
 
