@@ -60,7 +60,7 @@ export function ImportSpreadsheet() {
       // Skip header row
       if (i === 0 && looksLikeHeader(nome, numero)) continue;
 
-      if (nome && numero) leads.push({ nome, numero, nota, status: 'Sem contato' });
+      if (nome || numero) leads.push({ nome, numero, nota, status: 'Sem contato' });
     }
     return leads;
   };
@@ -80,7 +80,7 @@ export function ImportSpreadsheet() {
       // Skip header row
       if (_rowNumber === 1 && looksLikeHeader(nome, numero)) return;
 
-      if (nome && numero) leads.push({ nome, numero, nota, status: 'Sem contato' });
+      if (nome || numero) leads.push({ nome, numero, nota, status: 'Sem contato' });
     });
     return leads;
   };
