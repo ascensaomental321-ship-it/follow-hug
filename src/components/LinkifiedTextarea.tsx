@@ -70,7 +70,6 @@ export function LinkifiedTextarea({ id, value, onChange, placeholder, className 
           'h-28 min-h-28 max-h-28 overflow-y-auto w-full whitespace-pre-wrap break-words rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 [&_a]:cursor-pointer [&_a]:break-all [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2',
           className,
         )}
-        dangerouslySetInnerHTML={{ __html: linkifiedHtml(value) }}
         onFocus={() => { focusedRef.current = true; }}
         onInput={(event) => onChange(event.currentTarget.innerText.replace(/\n$/, ''))}
         onBlur={(event) => {
