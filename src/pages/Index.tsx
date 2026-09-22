@@ -109,7 +109,6 @@ const Index = () => {
   const openNew = () => { setSelectedLead(null); setDialogOpen(true); };
   const openEdit = (lead: Lead) => {
     orderRef.current = filteredLeads.map((l) => l.id);
-    openScriptTool(lead.nome);
     setOpenLeadId(lead.id);
   };
 
