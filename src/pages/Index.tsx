@@ -21,7 +21,7 @@ import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { TOOL_LINKS, openScriptTool } from '@/lib/prospectTools';
+import { TOOL_LINKS } from '@/lib/prospectTools';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { DeleteAllLeads } from '@/components/DeleteAllLeads';
 import { TodayCounter } from '@/components/TodayCounter';
