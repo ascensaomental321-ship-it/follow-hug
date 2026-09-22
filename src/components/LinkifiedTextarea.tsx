@@ -38,6 +38,14 @@ export function LinkifiedTextarea({ id, value, onChange, placeholder, className 
   const editorRef = useRef<HTMLDivElement>(null);
   const focusedRef = useRef(false);
 
+  // Conteúdo inicial — só na montagem (nunca usar dangerouslySetInnerHTML,
+  // pois o React reescreveria o innerHTML a cada tecla e o cursor iria pro início)
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (editor) editor.innerHTML = linkifiedHtml(value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor || focusedRef.current || editor.innerText.replace(/\n$/, '') === value) return;
