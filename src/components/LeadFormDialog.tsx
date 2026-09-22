@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { LEAD_STATUSES } from '@/lib/constants';
 import { useAddLead, useUpdateLead, useDeleteLead, type Lead } from '@/hooks/useLeads';
 import { useLeadTasks, useAddTask, useToggleTask, useDeleteTask } from '@/hooks/useLeadTasks';
-import { Trash2, Phone, MessageCircle, Copy, Plus, CalendarClock, Check, Lightbulb, FileText, Palette } from 'lucide-react';
+import { Trash2, Phone, MessageCircle, Copy, Plus, CalendarClock, Check, Lightbulb, FileText, Palette, MapPin } from 'lucide-react';
 import { openProspectTools, openScriptTool, openBuscalinkTool } from '@/lib/prospectTools';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
@@ -362,6 +362,32 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
             >
               <Phone className="h-9 w-9" strokeWidth={2.5} />
               <span className="text-xl font-bold">Ligar agora</span>
+            </a>
+          )}
+
+          {isEdit && watch('numero') && (
+            <a
+              href={`https://wa.me/${watch('numero').replace(/\D/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-green-600 px-4 py-6 text-white shadow-xl ring-4 ring-green-600/20 transition-transform active:scale-95"
+              aria-label="Abrir WhatsApp do lead"
+            >
+              <MessageCircle className="h-9 w-9" strokeWidth={2.5} />
+              <span className="text-xl font-bold">WhatsApp</span>
+            </a>
+          )}
+
+          {isEdit && watch('nome') && (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(watch('nome'))}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 px-4 py-6 text-white shadow-xl ring-4 ring-blue-600/20 transition-transform active:scale-95"
+              aria-label="Pesquisar empresa no Google Maps"
+            >
+              <MapPin className="h-9 w-9" strokeWidth={2.5} />
+              <span className="text-xl font-bold">Google Maps</span>
             </a>
           )}
 
