@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 97%;
+    --foreground: 224 30% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 30% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 30% 12%;
+
+    --primary: 230 72% 56%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 16% 93%;
+    --secondary-foreground: 224 30% 12%;
+
+    --muted: 220 16% 93%;
+    --muted-foreground: 220 10% 46%;
+
+    --accent: 230 72% 96%;
+    --accent-foreground: 230 72% 40%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 16% 88%;
+    --input: 220 16% 88%;
+    --ring: 230 72% 56%;
+
+    --radius: 0.75rem;
+
+    --status-sem-contato: 220 10% 56%;
+    --status-ligacao-feita: 200 80% 50%;
+    --status-ligacao-dois-feita: 170 75% 42%;
+    --status-religar: 25 90% 55%;
+    --status-whatsapp-feito: 152 70% 42%;
+    --status-interesse: 40 90% 50%;
+    --status-reuniao: 270 60% 56%;
+    --status-fechado: 145 65% 42%;
+    --status-descartado: 0 60% 50%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    --prospect: 272 72% 55%;
+    --prospect-foreground: 0 0% 100%;
+    --call: 145 65% 42%;
+    --call-foreground: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 224 30% 8%;
+    --foreground: 220 20% 95%;
+
+    --card: 224 25% 12%;
+    --card-foreground: 220 20% 95%;
+
+    --popover: 224 25% 12%;
+    --popover-foreground: 220 20% 95%;
+
+    --primary: 230 72% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 224 20% 18%;
+    --secondary-foreground: 220 20% 95%;
+
+    --muted: 224 20% 18%;
+    --muted-foreground: 220 10% 56%;
+
+    --accent: 230 50% 20%;
+    --accent-foreground: 230 72% 75%;
+
+    --destructive: 0 62% 35%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 224 20% 20%;
+    --input: 224 20% 20%;
+    --ring: 230 72% 60%;
+
+    --status-sem-contato: 220 10% 50%;
+    --status-ligacao-feita: 200 70% 55%;
+    --status-ligacao-dois-feita: 170 70% 48%;
+    --status-religar: 25 85% 58%;
+    --status-whatsapp-feito: 152 60% 48%;
+    --status-interesse: 40 80% 55%;
+    --status-reuniao: 270 50% 60%;
+    --status-fechado: 145 55% 48%;
+    --status-descartado: 0 55% 55%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    --prospect: 272 72% 62%;
+    --prospect-foreground: 0 0% 100%;
+    --call: 145 55% 48%;
+    --call-foreground: 0 0% 100%;
+  }
+}
+
+@keyframes milestone-pop-ten {
+  0%, 100% { transform: scale(1); }
+  35% { transform: scale(1.42) rotate(-3deg); }
+  65% { transform: scale(1.18) rotate(2deg); }
+}
+
+@keyframes milestone-pop-century {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.7) rotate(-5deg); }
+  55% { transform: scale(1.3) rotate(4deg); }
+  75% { transform: scale(1.45); }
+}
+
+@keyframes milestone-burst {
+  0% { opacity: 0; transform: rotate(var(--angle)) translateX(0) scale(0.4); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--angle)) translateX(var(--dist)) scale(1); }
+}
+
+@keyframes milestone-ring-century {
+  0% { opacity: 0.8; transform: scale(0.25); }
+  100% { opacity: 0; transform: scale(2.2); }
+}
+
+.milestone-pop-ten {
+  animation: milestone-pop-ten 700ms ease-out;
+}
+
+.milestone-pop-century {
+  animation: milestone-pop-century 1100ms ease-out;
+}
+
+.milestone-burst-ten,
+.milestone-burst-century {
+  position: absolute;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 9999px;
+  background: hsl(var(--primary));
+  animation: milestone-burst 900ms ease-out both;
+}
+
+.milestone-burst-century {
+  width: 0.55rem;
+  height: 0.55rem;
+  background: hsl(var(--status-interesse));
+  animation-duration: 1300ms;
+}
+
+.milestone-ring-century {
+  position: absolute;
+  width: 5rem;
+  height: 5rem;
+  border: 3px solid hsl(var(--status-interesse) / 0.75);
+  border-radius: 9999px;
+  animation: milestone-ring-century 1400ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .milestone-pop-ten,
+  .milestone-pop-century,
+  .milestone-burst-ten,
+  .milestone-burst-century,
+  .milestone-ring-century {
+    animation-duration: 1ms;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
