@@ -86,20 +86,11 @@ export function LeadCard({ lead, onClick, isDuplicate }: LeadCardProps) {
           </Button>
           </div>
         </div>
-        {/* no ambiente de teste a nota vem antes do número; no real, depois */}
-        {lead.ambiente === 'teste' && lead.nota && (
-          <div className="flex items-start gap-1.5 text-sm text-muted-foreground">
-            <StickyNote className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-            <p className="line-clamp-2 whitespace-pre-wrap break-words">
-              <Linkify text={lead.nota} />
-            </p>
-          </div>
-        )}
         <div className="flex items-center gap-1.5 text-sm text-muted-foreground min-w-0">
           <Phone className="h-3.5 w-3.5 shrink-0" />
           <span className="truncate">{lead.numero}</span>
         </div>
-        {lead.ambiente !== 'teste' && lead.nota && (
+        {lead.nota && (
           <div className="flex items-start gap-1.5 text-sm text-muted-foreground">
             <StickyNote className="h-3.5 w-3.5 mt-0.5 shrink-0" />
             <p className="line-clamp-2 whitespace-pre-wrap break-words">
