@@ -86,18 +86,20 @@ export function LeadCard({ lead, onClick, isDuplicate }: LeadCardProps) {
           </Button>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-sm text-muted-foreground min-w-0">
-          <Phone className="h-3.5 w-3.5 shrink-0" />
-          <span className="truncate">{lead.numero}</span>
-        </div>
-        {lead.nota && (
-          <div className="flex items-start gap-1.5 text-sm text-muted-foreground">
-            <StickyNote className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-            <p className="line-clamp-2 whitespace-pre-wrap break-words">
-              <Linkify text={lead.nota} />
-            </p>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground min-w-0">
+            <Phone className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate">{lead.numero}</span>
           </div>
-        )}
+          {lead.nota && (
+            <div className="flex items-start gap-1.5 text-sm text-muted-foreground">
+              <StickyNote className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+              <p className="line-clamp-2 whitespace-pre-wrap break-words">
+                <Linkify text={lead.nota} />
+              </p>
+            </div>
+          )}
+        </div>
         {isDuplicate && (
           <p className="text-xs text-destructive font-medium flex items-center gap-1">
             <AlertTriangle className="h-3 w-3" />
