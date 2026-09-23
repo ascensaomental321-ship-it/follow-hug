@@ -20,6 +20,7 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/comp
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useEnvironment } from '@/hooks/useEnvironment';
 
 const STATUS_FEEDBACK: Record<string, { phrase: string; varName: string }> = {
   'Sem contato': { phrase: 'Recomeço poderoso!', varName: '--status-sem-contato' },
@@ -101,6 +102,7 @@ interface FormData {
 }
 
 export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatusChanged, remoteNota, onNotaChanged, onAdvanceNext }: Props) {
+  const { ambiente } = useEnvironment();
   const addTask = useAddTask();
   const toggleTask = useToggleTask();
   const deleteTask = useDeleteTask();
@@ -354,6 +356,19 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
             />
           </div>
 
+          {isEdit && ambiente === 'teste' && watch('nome') && (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(watch('nome'))}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 px-4 py-6 text-white shadow-xl ring-4 ring-blue-600/20 transition-transform active:scale-95"
+              aria-label="Pesquisar empresa no Google Maps"
+            >
+              <MapPin className="h-9 w-9" strokeWidth={2.5} />
+              <span className="text-xl font-bold">Google Maps</span>
+            </a>
+          )}
+
           {isEdit && watch('numero') && (
             <a
               href={`tel:${watch('numero').replace(/\D/g, '')}`}
@@ -378,7 +393,7 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
             </a>
           )}
 
-          {isEdit && watch('nome') && (
+          {isEdit && ambiente !== 'teste' && watch('nome') && (
             <a
               href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(watch('nome'))}`}
               target="_blank"
