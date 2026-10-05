@@ -339,6 +339,17 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
             </Select>
           </div>
 
+          {isEdit && watch('numero') && (
+            <a
+              href={`tel:${watch('numero').replace(/\D/g, '')}`}
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-call px-4 py-6 text-call-foreground shadow-xl ring-4 ring-call/20 transition-transform active:scale-95"
+              aria-label="Ligar para o lead"
+            >
+              <Phone className="h-9 w-9" strokeWidth={2.5} />
+              <span className="text-xl font-bold">Ligar agora</span>
+            </a>
+          )}
+
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="nota">Nota</Label>
@@ -366,17 +377,6 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
             >
               <MapPin className="h-9 w-9" strokeWidth={2.5} />
               <span className="text-xl font-bold">Google Maps</span>
-            </a>
-          )}
-
-          {isEdit && watch('numero') && (
-            <a
-              href={`tel:${watch('numero').replace(/\D/g, '')}`}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-call px-4 py-6 text-call-foreground shadow-xl ring-4 ring-call/20 transition-transform active:scale-95"
-              aria-label="Ligar para o lead"
-            >
-              <Phone className="h-9 w-9" strokeWidth={2.5} />
-              <span className="text-xl font-bold">Ligar agora</span>
             </a>
           )}
 
