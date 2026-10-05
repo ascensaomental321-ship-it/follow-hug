@@ -339,6 +339,20 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
             </Select>
           </div>
 
+          {isEdit && statusValue === 'Ligação feita' && watch('numero') && (
+            <a
+              href={`https://wa.me/${watch('numero').replace(/\D/g, '')}?text=${encodeURIComponent(`${new Date().getHours() < 12 ? 'Ótimo dia' : 'Ótima tarde'}, por gentileza falo com ${watch('nome')}?`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-green-600 px-4 py-6 text-white shadow-xl ring-4 ring-green-600/20 transition-transform active:scale-95"
+              aria-label="Zap rápido para o lead"
+            >
+              <MessageCircle className="h-9 w-9" strokeWidth={2.5} />
+              <span className="text-xl font-bold">Zap rápido</span>
+            </a>
+          )}
+
+
           {isEdit && watch('numero') && (
             <a
               href={`tel:${watch('numero').replace(/\D/g, '')}`}
