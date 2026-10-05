@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -271,60 +271,20 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
             </div>
           </div>
         )}
-        <DialogHeader>
+        <DialogHeader className="sr-only">
           <DialogTitle>{isEdit ? 'Editar Lead' : 'Novo Lead'}</DialogTitle>
-          <DialogDescription>{isEdit ? 'Atualize as informações do lead.' : 'Preencha os dados do novo lead.'}</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="nome">Nome</Label>
-              {isEdit && (
-                <div className="flex items-center gap-1.5">
-                  <Button
-                    type="button"
-                    size="icon"
-                    aria-label="Abrir Buscalink"
-                    title="Buscalink"
-                    className="h-8 w-8 bg-prospect text-prospect-foreground hover:bg-prospect/90 shadow-sm"
-                    onClick={() => {
-                      const copied = openBuscalinkTool(watch('nome'));
-                      toast.success(copied ? 'Nome copiado — Buscalink aberto' : 'Buscalink aberto');
-                    }}
-                  >
-                    <Palette className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    type="button"
-                    size="icon"
-                    aria-label="Abrir ferramentas de prospecção"
-                    title="Buscalink + Script"
-                    className="h-8 w-8 bg-prospect text-prospect-foreground hover:bg-prospect/90 shadow-sm"
-                    onClick={() => {
-                      const copied = openProspectTools(watch('nome'));
-                      toast.success(copied ? 'Nome copiado — no Buscalink dê Ctrl+V' : 'Ferramentas abertas');
-                    }}
-                  >
-                    <Lightbulb className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    type="button"
-                    size="icon"
-                    aria-label="Abrir Script"
-                    title="Script"
-                    className="h-8 w-8 bg-prospect text-prospect-foreground hover:bg-prospect/90 shadow-sm"
-                    onClick={() => { openScriptTool(watch('nome')); toast.success('Script aberto'); }}
-                  >
-                    <FileText className="h-4 w-4" />
-                  </Button>
-                  <button type="button" onClick={() => { navigator.clipboard.writeText(watch('nome')); toast.success('Nome copiado!'); }} className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
-                    <Copy className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              )}
-            </div>
-            <Input id="nome" {...register('nome', { required: true })} placeholder="Nome do lead" />
-          </div>
+          {isEdit && watch('numero') && (
+            <a
+              href={`tel:${watch('numero').replace(/\D/g, '')}`}
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-call px-4 py-6 text-call-foreground shadow-xl ring-4 ring-call/20 transition-transform active:scale-95"
+              aria-label="Ligar para o lead"
+            >
+              <Phone className="h-9 w-9" strokeWidth={2.5} />
+              <span className="text-xl font-bold">Ligar agora</span>
+            </a>
+          )}
           <div className="space-y-2">
             <Label>Status</Label>
             <Select value={statusValue} onValueChange={handleStatusChange}>
@@ -338,7 +298,17 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
               </SelectContent>
             </Select>
           </div>
-
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="nome">Nome</Label>
+              {isEdit && (
+                <button type="button" onClick={() => { navigator.clipboard.writeText(watch('nome')); toast.success('Nome copiado!'); }} className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
+                  <Copy className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+            <Input id="nome" {...register('nome', { required: true })} placeholder="Nome do lead" />
+          </div>
           {isEdit && statusValue === 'Ligação feita' && watch('numero') && (
             <a
               href={`https://wa.me/${watch('numero').replace(/\D/g, '')}?text=${encodeURIComponent(`${new Date().getHours() < 12 ? 'Ótimo dia' : 'Ótima tarde'}, por gentileza falo com ${watch('nome')}?`)}`}
@@ -352,17 +322,6 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
             </a>
           )}
 
-
-          {isEdit && watch('numero') && (
-            <a
-              href={`tel:${watch('numero').replace(/\D/g, '')}`}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-call px-4 py-6 text-call-foreground shadow-xl ring-4 ring-call/20 transition-transform active:scale-95"
-              aria-label="Ligar para o lead"
-            >
-              <Phone className="h-9 w-9" strokeWidth={2.5} />
-              <span className="text-xl font-bold">Ligar agora</span>
-            </a>
-          )}
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -431,6 +390,47 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
             </div>
             <Input id="numero" {...register('numero', { required: true })} placeholder="(11) 99999-9999" />
           </div>
+
+          {isEdit && (
+            <div className="flex items-center justify-center gap-1.5">
+              <Button
+                type="button"
+                size="icon"
+                aria-label="Abrir Buscalink"
+                title="Buscalink"
+                className="h-8 w-8 bg-prospect text-prospect-foreground hover:bg-prospect/90 shadow-sm"
+                onClick={() => {
+                  const copied = openBuscalinkTool(watch('nome'));
+                  toast.success(copied ? 'Nome copiado — Buscalink aberto' : 'Buscalink aberto');
+                }}
+              >
+                <Palette className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                size="icon"
+                aria-label="Abrir ferramentas de prospecção"
+                title="Buscalink + Script"
+                className="h-8 w-8 bg-prospect text-prospect-foreground hover:bg-prospect/90 shadow-sm"
+                onClick={() => {
+                  const copied = openProspectTools(watch('nome'));
+                  toast.success(copied ? 'Nome copiado — no Buscalink dê Ctrl+V' : 'Ferramentas abertas');
+                }}
+              >
+                <Lightbulb className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                size="icon"
+                aria-label="Abrir Script"
+                title="Script"
+                className="h-8 w-8 bg-prospect text-prospect-foreground hover:bg-prospect/90 shadow-sm"
+                onClick={() => { openScriptTool(watch('nome')); toast.success('Script aberto'); }}
+              >
+                <FileText className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
 
           {isEdit && watch('numero') && (
             <div className="space-y-2">
