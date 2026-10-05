@@ -368,6 +368,17 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
           </div>
 
           {isEdit && ambiente === 'teste' && watch('nome') && (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(watch('nome'))}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 px-4 py-6 text-white shadow-xl ring-4 ring-blue-600/20 transition-transform active:scale-95"
+              aria-label="Pesquisar empresa no Google Maps"
+            >
+              <MapPin className="h-9 w-9" strokeWidth={2.5} />
+              <span className="text-xl font-bold">Google Maps</span>
+            </a>
+          )}
 
           {isEdit && watch('numero') && (
             <a
