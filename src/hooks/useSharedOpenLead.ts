@@ -15,6 +15,8 @@ export interface RemoteStatusChange {
  */
 export function useSharedOpenLead(ambiente: string) {
   const [openLeadId, setOpenLeadIdState] = useState<string | null>(null);
+  const [openTab, setOpenTab] = useState<string | null>(null);
+  const tabRef = useRef<string | null>(null);
   const [remoteStatus, setRemoteStatus] = useState<RemoteStatusChange | null>(null);
   const [remoteNota, setRemoteNota] = useState<{ leadId: string; nota: string; at: number } | null>(null);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
@@ -26,9 +28,12 @@ export function useSharedOpenLead(ambiente: string) {
     });
     channel
       .on('broadcast', { event: 'open-card' }, ({ payload }) => {
-        const id = (payload as { leadId: string | null })?.leadId ?? null;
+        const p = payload as { leadId: string | null; tab?: string | null };
+        const id = p?.leadId ?? null;
         currentRef.current = id;
+        tabRef.current = p?.tab ?? null;
         setOpenLeadIdState(id);
+        setOpenTab(p?.tab ?? null);
       })
       // troca de status feita em outro dispositivo → espelha a animação aqui
       .on('broadcast', { event: 'status-change' }, ({ payload }) => {
@@ -47,7 +52,7 @@ export function useSharedOpenLead(ambiente: string) {
       // quem chega depois pergunta qual card está aberto
       .on('broadcast', { event: 'who-open' }, () => {
         if (currentRef.current) {
-          channel.send({ type: 'broadcast', event: 'open-card', payload: { leadId: currentRef.current } });
+          channel.send({ type: 'broadcast', event: 'open-card', payload: { leadId: currentRef.current, tab: tabRef.current } });
         }
       })
       .subscribe((status) => {
@@ -62,10 +67,12 @@ export function useSharedOpenLead(ambiente: string) {
     };
   }, [ambiente]);
 
-  const setOpenLeadId = (leadId: string | null) => {
+  const setOpenLeadId = (leadId: string | null, tab: string | null = null) => {
     currentRef.current = leadId;
+    tabRef.current = tab;
     setOpenLeadIdState(leadId);
-    channelRef.current?.send({ type: 'broadcast', event: 'open-card', payload: { leadId } });
+    setOpenTab(tab);
+    channelRef.current?.send({ type: 'broadcast', event: 'open-card', payload: { leadId, tab } });
   };
 
   const broadcastStatusChange = (leadId: string, status: string) => {
@@ -76,5 +83,5 @@ export function useSharedOpenLead(ambiente: string) {
     channelRef.current?.send({ type: 'broadcast', event: 'nota-change', payload: { leadId, nota } });
   };
 
-  return { openLeadId, setOpenLeadId, remoteStatus, broadcastStatusChange, remoteNota, broadcastNota };
+  return { openLeadId, openTab, setOpenLeadId, remoteStatus, broadcastStatusChange, remoteNota, broadcastNota };
 }
