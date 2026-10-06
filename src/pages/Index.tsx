@@ -32,7 +32,7 @@ const Index = () => {
   const { ambiente, toggle } = useEnvironment();
   const { data: leads, isLoading } = useLeads();
   useLeadsRealtime();
-  const { openLeadId, setOpenLeadId, remoteStatus, broadcastStatusChange, remoteNota, broadcastNota } =
+  const { openLeadId, openTab, setOpenLeadId, remoteStatus, broadcastStatusChange, remoteNota, broadcastNota } =
     useSharedOpenLead(ambiente);
   const { data: tasks } = useAllTasks();
   const { data: todayActivity } = useTodayActivity();
@@ -109,7 +109,7 @@ const Index = () => {
   const openNew = () => { setSelectedLead(null); setDialogOpen(true); };
   const openEdit = (lead: Lead) => {
     orderRef.current = filteredLeads.map((l) => l.id);
-    setOpenLeadId(lead.id);
+    setOpenLeadId(lead.id, activeTab);
   };
 
   /** Depois de trocar o status, abre o próximo card da lista automaticamente. */
@@ -132,7 +132,7 @@ const Index = () => {
       return true;
     });
     if (nextId) {
-      setOpenLeadId(nextId);
+      setOpenLeadId(nextId, activeTab);
       const nextLead = leads?.find((x) => x.id === nextId);
       if (nextLead) openScriptTool(nextLead.nome);
     } else {
@@ -142,14 +142,14 @@ const Index = () => {
 
   // Card aberto é compartilhado: abre/fecha em todos os dispositivos
   useEffect(() => {
-    if (openLeadId) {
+    if (openLeadId && (!openTab || openTab === activeTab)) {
       const lead = leads?.find((l) => l.id === openLeadId);
       if (lead) { setSelectedLead(lead); setDialogOpen(true); }
     } else if (selectedLead) {
       setDialogOpen(false);
       setSelectedLead(null);
     }
-  }, [openLeadId, leads]);
+  }, [openLeadId, openTab, activeTab, leads]);
 
   const handleDialogOpenChange = (open: boolean) => {
     setDialogOpen(open);
