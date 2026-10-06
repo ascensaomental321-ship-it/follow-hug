@@ -8,6 +8,7 @@ import Tarefas from "./pages/Tarefas";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import { EnvironmentProvider } from "@/hooks/useEnvironment";
+import { TaskAlarm } from "@/components/TaskAlarm";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <TaskAlarm />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
