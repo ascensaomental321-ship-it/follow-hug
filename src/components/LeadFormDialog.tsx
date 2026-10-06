@@ -290,9 +290,14 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
             <Select value={statusValue} onValueChange={handleStatusChange}>
               <SelectTrigger
                 onDoubleClick={(e) => {
-                  if (isEdit && statusValue === 'Sem contato') {
+                  const next: Record<string, string> = {
+                    'Sem contato': 'Ligação feita',
+                    'Ligação feita': 'WhatsApp feito',
+                  };
+                  const target = statusValue ? next[statusValue] : undefined;
+                  if (isEdit && target) {
                     e.preventDefault();
-                    handleStatusChange('Ligação feita');
+                    handleStatusChange(target);
                   }
                 }}
               >
