@@ -288,7 +288,14 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
           <div className="space-y-2">
             <Label>Status</Label>
             <Select value={statusValue} onValueChange={handleStatusChange}>
-              <SelectTrigger>
+              <SelectTrigger
+                onDoubleClick={(e) => {
+                  if (isEdit && statusValue === 'Sem contato') {
+                    e.preventDefault();
+                    handleStatusChange('Ligação feita');
+                  }
+                }}
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
