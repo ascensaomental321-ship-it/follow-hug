@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Tarefas from "./pages/Tarefas";
 import Dashboard from "./pages/Dashboard";
+import TarefaLead from "./pages/TarefaLead";
 import NotFound from "./pages/NotFound";
 import { EnvironmentProvider } from "@/hooks/useEnvironment";
 import { TaskAlarm } from "@/components/TaskAlarm";
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/tarefas" element={<Tarefas />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/tarefa/:id" element={<TarefaLead />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

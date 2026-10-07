@@ -333,8 +333,13 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
               <span className="text-xl font-bold">Zap rápido</span>
             </a>
           )}
-
-
+          {isEdit && statusValue !== 'Descartado' && (
+            <div className="flex justify-center">
+              <Button type="button" variant="destructive" onClick={() => handleStatusChange('Descartado')}>
+                Descartar
+              </Button>
+            </div>
+          )}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="nota">Nota</Label>
