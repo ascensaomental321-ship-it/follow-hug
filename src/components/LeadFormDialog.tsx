@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { LEAD_STATUSES } from '@/lib/constants';
 import { useAddLead, useUpdateLead, useDeleteLead, type Lead } from '@/hooks/useLeads';
 import { useLeadTasks, useAddTask, useToggleTask, useDeleteTask } from '@/hooks/useLeadTasks';
-import { Trash2, Phone, MessageCircle, Copy, Plus, CalendarClock, Check, Lightbulb, FileText, Palette, MapPin } from 'lucide-react';
+import { Trash2, Phone, MessageCircle, Copy, Plus, CalendarClock, Check, Lightbulb, FileText, Palette, MapPin, Mic } from 'lucide-react';
 import { openProspectTools, openScriptTool, openBuscalinkTool } from '@/lib/prospectTools';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
@@ -99,6 +99,74 @@ interface FormData {
   numero: string;
   nota: string;
   status: string;
+  atendente: string;
+  dono: string;
+}
+
+/** Campo de texto com botão de microfone (reconhecimento de voz do navegador, sem custo). */
+function VoiceInput({ id, label, value, onChange, placeholder }: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+}) {
+  const [listening, setListening] = useState(false);
+  const recRef = useRef<{ stop: () => void } | null>(null);
+
+  const toggle = () => {
+    if (listening) {
+      recRef.current?.stop();
+      setListening(false);
+      return;
+    }
+    type Rec = {
+      lang: string; interimResults: boolean; maxAlternatives: number;
+      onresult: ((e: SpeechRecognitionEvent) => void) | null;
+      onend: (() => void) | null; onerror: (() => void) | null;
+      start: () => void; stop: () => void;
+    };
+    const w = window as unknown as { SpeechRecognition?: new () => Rec; webkitSpeechRecognition?: new () => Rec };
+    const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
+    if (!Ctor) {
+      toast.error('Seu navegador não tem reconhecimento de voz — digite normalmente');
+      return;
+    }
+    const rec = new Ctor();
+    rec.lang = 'pt-BR';
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    rec.onresult = (e: SpeechRecognitionEvent) => {
+      const text = e.results[0]?.[0]?.transcript ?? '';
+      if (text) onChange(value ? `${value} ${text}` : text);
+    };
+    rec.onend = () => setListening(false);
+    rec.onerror = () => setListening(false);
+    recRef.current = rec;
+    setListening(true);
+    rec.start();
+  };
+
+  useEffect(() => () => { recRef.current?.stop(); }, []);
+
+  return (
+    <div className="space-y-1.5">
+      <Label htmlFor={id} className="text-xs text-muted-foreground">{label} <span className="opacity-60">(opcional)</span></Label>
+      <div className="relative">
+        <Input id={id} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="pr-10" />
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label={`Falar ${label}`}
+          className={`absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full p-1.5 transition-colors ${
+            listening ? 'bg-destructive text-destructive-foreground animate-pulse' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+          }`}
+        >
+          <Mic className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatusChanged, remoteNota, onNotaChanged, onAdvanceNext }: Props) {
@@ -120,14 +188,14 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
   const qc = useQueryClient();
 
   const { register, handleSubmit, reset, setValue, watch } = useForm<FormData>({
-    defaultValues: { nome: '', numero: '', nota: '', status: 'Sem contato' },
+    defaultValues: { nome: '', numero: '', nota: '', status: 'Sem contato', atendente: '', dono: '' },
   });
 
   useEffect(() => {
     if (lead) {
-      reset({ nome: lead.nome, numero: lead.numero, nota: lead.nota ?? '', status: lead.status });
+      reset({ nome: lead.nome, numero: lead.numero, nota: lead.nota ?? '', status: lead.status, atendente: lead.atendente ?? '', dono: lead.dono ?? '' });
     } else {
-      reset({ nome: '', numero: '', nota: '', status: 'Sem contato' });
+      reset({ nome: '', numero: '', nota: '', status: 'Sem contato', atendente: '', dono: '' });
     }
     setShowSuccess(false);
   }, [lead, open, reset]);
@@ -340,6 +408,20 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
               </Button>
             </div>
           )}
+          <VoiceInput
+            id="atendente"
+            label="Nome da atendente"
+            value={watch('atendente') ?? ''}
+            onChange={(v) => setValue('atendente', v, { shouldDirty: true })}
+            placeholder="Quem atendeu a ligação"
+          />
+          <VoiceInput
+            id="dono"
+            label="Nome do dono"
+            value={watch('dono') ?? ''}
+            onChange={(v) => setValue('dono', v, { shouldDirty: true })}
+            placeholder="Nome do dono da empresa"
+          />
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="nota">Nota</Label>

@@ -87,7 +87,9 @@ export type Database = {
       leads: {
         Row: {
           ambiente: string
+          atendente: string | null
           created_at: string
+          dono: string | null
           id: string
           nome: string
           nota: string | null
@@ -97,7 +99,9 @@ export type Database = {
         }
         Insert: {
           ambiente?: string
+          atendente?: string | null
           created_at?: string
+          dono?: string | null
           id?: string
           nome: string
           nota?: string | null
@@ -107,7 +111,9 @@ export type Database = {
         }
         Update: {
           ambiente?: string
+          atendente?: string | null
           created_at?: string
+          dono?: string | null
           id?: string
           nome?: string
           nota?: string | null
