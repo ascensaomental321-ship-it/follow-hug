@@ -120,7 +120,13 @@ function VoiceInput({ id, label, value, onChange, placeholder }: {
       setListening(false);
       return;
     }
-    const w = window as unknown as { SpeechRecognition?: new () => SpeechRecognition; webkitSpeechRecognition?: new () => SpeechRecognition };
+    type Rec = {
+      lang: string; interimResults: boolean; maxAlternatives: number;
+      onresult: ((e: SpeechRecognitionEvent) => void) | null;
+      onend: (() => void) | null; onerror: (() => void) | null;
+      start: () => void; stop: () => void;
+    };
+    const w = window as unknown as { SpeechRecognition?: new () => Rec; webkitSpeechRecognition?: new () => Rec };
     const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
     if (!Ctor) {
       toast.error('Seu navegador não tem reconhecimento de voz — digite normalmente');
