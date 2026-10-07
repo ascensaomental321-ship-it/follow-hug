@@ -3,7 +3,7 @@ import { useAllTasks } from '@/hooks/useLeadTasks';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
-type Alarm = { id: string; titulo: string; nome: string; numero: string; hora: string };
+type Alarm = { id: string; leadId: string; titulo: string; nome: string; numero: string; hora: string };
 
 /** Agenda alarmes no próprio navegador (sem custo de servidor) para cada tarefa pendente. */
 export function TaskAlarm() {
@@ -23,7 +23,7 @@ export function TaskAlarm() {
       if (delay <= 0 || delay > 2147483647) continue;
       timers.push(window.setTimeout(() => {
         const a: Alarm = {
-          id: t.id, titulo: t.titulo, nome: t.leads?.nome ?? 'Lead', numero: t.leads?.numero ?? '',
+          id: t.id, leadId: t.lead_id, titulo: t.titulo, nome: t.leads?.nome ?? 'Lead', numero: t.leads?.numero ?? '',
           hora: new Date(t.data_hora).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
         };
         setAlarms((prev) => [...prev, a]);
@@ -51,6 +51,11 @@ export function TaskAlarm() {
         <DialogFooter className="gap-2">
           {current?.numero && (
             <Button asChild variant="outline"><a href={`tel:${current.numero.replace(/\D/g, '')}`}>Ligar</a></Button>
+          )}
+          {current?.leadId && (
+            <Button variant="outline" onClick={() => { window.open(`/tarefa/${current.leadId}`, '_blank'); close(); }}>
+              Abrir card
+            </Button>
           )}
           <Button onClick={close}>OK</Button>
         </DialogFooter>
