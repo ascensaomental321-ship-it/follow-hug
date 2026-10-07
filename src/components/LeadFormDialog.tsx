@@ -182,14 +182,14 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
   const qc = useQueryClient();
 
   const { register, handleSubmit, reset, setValue, watch } = useForm<FormData>({
-    defaultValues: { nome: '', numero: '', nota: '', status: 'Sem contato' },
+    defaultValues: { nome: '', numero: '', nota: '', status: 'Sem contato', atendente: '', dono: '' },
   });
 
   useEffect(() => {
     if (lead) {
-      reset({ nome: lead.nome, numero: lead.numero, nota: lead.nota ?? '', status: lead.status });
+      reset({ nome: lead.nome, numero: lead.numero, nota: lead.nota ?? '', status: lead.status, atendente: lead.atendente ?? '', dono: lead.dono ?? '' });
     } else {
-      reset({ nome: '', numero: '', nota: '', status: 'Sem contato' });
+      reset({ nome: '', numero: '', nota: '', status: 'Sem contato', atendente: '', dono: '' });
     }
     setShowSuccess(false);
   }, [lead, open, reset]);
@@ -402,6 +402,20 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
               </Button>
             </div>
           )}
+          <VoiceInput
+            id="atendente"
+            label="Nome da atendente"
+            value={watch('atendente') ?? ''}
+            onChange={(v) => setValue('atendente', v, { shouldDirty: true })}
+            placeholder="Quem atendeu a ligação"
+          />
+          <VoiceInput
+            id="dono"
+            label="Nome do dono"
+            value={watch('dono') ?? ''}
+            onChange={(v) => setValue('dono', v, { shouldDirty: true })}
+            placeholder="Nome do dono da empresa"
+          />
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="nota">Nota</Label>
