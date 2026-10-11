@@ -34,6 +34,13 @@ const STATUS_FEEDBACK: Record<string, { phrase: string; varName: string }> = {
   'Descartado': { phrase: 'Bora pro próximo!', varName: '--status-descartado' },
 };
 
+// Duplo toque no Status: "Sem contato" → "Ligação feita" → "WhatsApp feito"
+const STATUS_JUMP: Record<string, string> = {
+  'Sem contato': 'Ligação feita',
+  'Ligação feita': 'WhatsApp feito',
+};
+
+
 const FOLLOW_UP_VARIANTS: Record<string, ((nome: string) => string)[]> = {
   '1': [
     (nome) => `Olá ${nome},\n\nVocê sabia que empresas que investem em tráfego pago de forma estratégica conseguem atrair clientes todos os dias de forma previsível? Com campanhas bem segmentadas no Google e Meta Ads, é possível colocar seu negócio na frente das pessoas certas, no momento certo. Vamos conversar sobre como isso funcionaria para o seu caso?\n\nEquipe Zenter`,
@@ -273,7 +280,42 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
     }
   };
 
-  // Espelha a animação quando o status é trocado em outro dispositivo
+  // Detecta o duplo toque no Status por pointerdown — vale para mouse e toque na tela.
+  const statusWrapRef = useRef<HTMLDivElement>(null);
+  const lastTapAt = useRef(0);
+  const statusValueRef = useRef(statusValue);
+  const jumpRef = useRef(handleStatusChange);
+  statusValueRef.current = statusValue;
+  jumpRef.current = handleStatusChange;
+
+  useEffect(() => {
+    if (!open || !isEdit) return;
+    const onDown = (ev: PointerEvent) => {
+      const el = statusWrapRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const inside = ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom;
+      if (!inside) {
+        lastTapAt.current = 0;
+        return;
+      }
+      const now = performance.now();
+      if (now - lastTapAt.current < 350) {
+        lastTapAt.current = 0;
+        const target = STATUS_JUMP[statusValueRef.current];
+        if (target) {
+          ev.stopPropagation();
+          jumpRef.current(target);
+        }
+      } else {
+        lastTapAt.current = now;
+      }
+    };
+    document.addEventListener('pointerdown', onDown, true);
+    return () => document.removeEventListener('pointerdown', onDown, true);
+  }, [open, isEdit]);
+
+
   useEffect(() => {
     if (!remoteStatus || !open || !lead || remoteStatus.leadId !== lead.id) return;
     setValue('status', remoteStatus.status);
