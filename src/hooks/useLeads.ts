@@ -94,7 +94,6 @@ export function useUpdateLead() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['leads'] });
       qc.invalidateQueries({ queryKey: ['today-activity'] });
-      toast.success('Lead atualizado!');
     },
     onError: () => toast.error('Erro ao atualizar lead'),
   });
