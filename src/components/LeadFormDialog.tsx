@@ -314,9 +314,9 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
     document.addEventListener('pointerdown', onDown, true);
     return () => document.removeEventListener('pointerdown', onDown, true);
   }, [open, isEdit]);
-
-
+  // Espelha a animação quando o status é trocado em outro dispositivo
   useEffect(() => {
+
     if (!remoteStatus || !open || !lead || remoteStatus.leadId !== lead.id) return;
     setValue('status', remoteStatus.status);
 
@@ -387,22 +387,11 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
               <span className="text-xl font-bold">Ligar agora</span>
             </a>
           )}
-          <div className="space-y-2">
+          <div className="space-y-2" ref={statusWrapRef}>
             <Label>Status</Label>
-            <Select value={statusValue} onValueChange={handleStatusChange}>
-              <SelectTrigger
-                onDoubleClick={(e) => {
-                  const next: Record<string, string> = {
-                    'Sem contato': 'Ligação feita',
-                    'Ligação feita': 'WhatsApp feito',
-                  };
-                  const target = statusValue ? next[statusValue] : undefined;
-                  if (isEdit && target) {
-                    e.preventDefault();
-                    handleStatusChange(target);
-                  }
-                }}
-              >
+            <Select key={lead?.id ?? 'new'} value={statusValue} onValueChange={handleStatusChange}>
+              <SelectTrigger>
+
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
