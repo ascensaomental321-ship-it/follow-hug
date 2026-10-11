@@ -265,21 +265,11 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
   const handleStatusChange = (newStatus: string) => {
     setValue('status', newStatus);
     if (isEdit && lead && newStatus !== lead.status) {
-      setFeedbackStatus(newStatus);
-      setShowSuccess(true);
       onStatusChanged?.(lead.id, newStatus);
-      setTimeout(() => {
-        updateLead.mutate(
-          { id: lead.id, oldStatus: lead.status, nome: watch('nome'), numero: watch('numero'), nota: watch('nota'), status: newStatus },
-          {
-            onSuccess: () => {
-              setShowSuccess(false);
-              if (onAdvanceNext) onAdvanceNext(lead.id);
-              else onOpenChange(false);
-            },
-          }
-        );
-      }, 1100);
+      // salva em segundo plano e já pula pro próximo na hora
+      updateLead.mutate({ id: lead.id, oldStatus: lead.status, nome: watch('nome'), numero: watch('numero'), nota: watch('nota'), atendente: watch('atendente'), dono: watch('dono'), status: newStatus });
+      if (onAdvanceNext) onAdvanceNext(lead.id);
+      else onOpenChange(false);
     }
   };
 
@@ -287,10 +277,7 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
   useEffect(() => {
     if (!remoteStatus || !open || !lead || remoteStatus.leadId !== lead.id) return;
     setValue('status', remoteStatus.status);
-    setFeedbackStatus(remoteStatus.status);
-    setShowSuccess(true);
-    const t = setTimeout(() => setShowSuccess(false), 1400);
-    return () => clearTimeout(t);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [remoteStatus?.at]);
 
@@ -301,7 +288,12 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
   const accentRing = `hsl(var(${feedback.varName}) / 0.25)`;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(o) => {
+      if (!o && isEdit && lead) {
+        updateLead.mutate({ id: lead.id, oldStatus: lead.status, nome: watch('nome'), numero: watch('numero'), nota: watch('nota'), atendente: watch('atendente'), dono: watch('dono'), status: watch('status') });
+      }
+      onOpenChange(o);
+    }}>
       <DialogContent
         className="sm:max-w-md max-h-[90vh] overflow-y-auto"
         onInteractOutside={(e) => { if (isEdit) e.preventDefault(); }}
@@ -408,20 +400,6 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
               </Button>
             </div>
           )}
-          <VoiceInput
-            id="atendente"
-            label="Nome da atendente"
-            value={watch('atendente') ?? ''}
-            onChange={(v) => setValue('atendente', v, { shouldDirty: true })}
-            placeholder="Quem atendeu a ligação"
-          />
-          <VoiceInput
-            id="dono"
-            label="Nome do dono"
-            value={watch('dono') ?? ''}
-            onChange={(v) => setValue('dono', v, { shouldDirty: true })}
-            placeholder="Nome do dono da empresa"
-          />
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="nota">Nota</Label>
@@ -438,6 +416,20 @@ export function LeadFormDialog({ open, onOpenChange, lead, remoteStatus, onStatu
               placeholder="Anotações sobre o lead..."
             />
           </div>
+          <VoiceInput
+            id="atendente"
+            label="Nome da atendente"
+            value={watch('atendente') ?? ''}
+            onChange={(v) => setValue('atendente', v, { shouldDirty: true })}
+            placeholder="Quem atendeu a ligação"
+          />
+          <VoiceInput
+            id="dono"
+            label="Nome do dono"
+            value={watch('dono') ?? ''}
+            onChange={(v) => setValue('dono', v, { shouldDirty: true })}
+            placeholder="Nome do dono da empresa"
+          />
 
           {isEdit && ambiente === 'teste' && watch('nome') && (
             <a
