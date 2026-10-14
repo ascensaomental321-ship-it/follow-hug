@@ -25,6 +25,7 @@ import { TOOL_LINKS } from '@/lib/prospectTools';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { DeleteAllLeads } from '@/components/DeleteAllLeads';
 import { TodayCounter } from '@/components/TodayCounter';
+import { CopyNextTen } from '@/components/CopyNextTen';
 
 const ALL_TAB = 'Todos';
 
@@ -261,6 +262,7 @@ const Index = () => {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </Tabs>
+        {activeTab === 'Ligação feita' && <CopyNextTen leads={filteredLeads} />}
       </div>
 
       <main className="mx-auto max-w-4xl px-3 sm:px-4 py-3 sm:py-4">
