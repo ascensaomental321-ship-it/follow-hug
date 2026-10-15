@@ -24,6 +24,7 @@ import { Badge } from '@/components/ui/badge';
 import { TOOL_LINKS } from '@/lib/prospectTools';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { DeleteAllLeads } from '@/components/DeleteAllLeads';
+import { ExportLeads } from '@/components/ExportLeads';
 import { TodayCounter } from '@/components/TodayCounter';
 import { CopyNextTen } from '@/components/CopyNextTen';
 
@@ -191,6 +192,7 @@ const Index = () => {
               </Link>
             </Button>
             <ImportSpreadsheet />
+            <ExportLeads leads={filteredLeads} tab={activeTab} />
             <PasteLeads />
             <Button variant="outline" size="icon" onClick={sendReport} disabled={reportLoading} className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3">
               {reportLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4 sm:mr-1" />}
