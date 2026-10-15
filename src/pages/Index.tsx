@@ -24,6 +24,7 @@ import { Badge } from '@/components/ui/badge';
 import { TOOL_LINKS } from '@/lib/prospectTools';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { DeleteAllLeads } from '@/components/DeleteAllLeads';
+import { ExportLeads } from '@/components/ExportLeads';
 import { TodayCounter } from '@/components/TodayCounter';
 import { CopyNextTen } from '@/components/CopyNextTen';
 
